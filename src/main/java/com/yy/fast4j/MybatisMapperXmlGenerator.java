@@ -19,24 +19,26 @@ private static final Logger logger = LogManager.getLogger(MybatisMapperXmlGenera
 	
 	private static final Class<?> qcClass = QueryCondition.class;
 
+	private final Class<?> poClass;
+	private final String tableName;
 	private String mapperPackage;
 	private String servicePackage;
 	private String serviceImplPackage;
 	private final String javaSourceFolder;
-	private final Class<?> poClass;
-	private final String tableName;
-	public MybatisMapperXmlGenerator(String javaSourceFolder,
+	
+	public MybatisMapperXmlGenerator(Class<?> poClass,
+                                      String tableName,
+                                      String javaSourceFolder,
 			                          String mapperPackage,
 			                          String servicePackage,
-			                          String serviceImplPackage,
-                                      Class<?> poClass,
-                                      String tableName) {
+			                          String serviceImplPackage
+                                      ) {
+		this.poClass = poClass;
+		this.tableName = tableName;
 		this.javaSourceFolder = javaSourceFolder;
 		this.mapperPackage = mapperPackage;
 		this.servicePackage = servicePackage;
 		this.serviceImplPackage = serviceImplPackage;
-		this.poClass = poClass;
-		this.tableName = tableName;
 	}
 	
 	//生成mapper接口字符串
@@ -155,7 +157,7 @@ private static final Logger logger = LogManager.getLogger(MybatisMapperXmlGenera
 		sb.append("            </foreach>").append(System.lineSeparator());
 		sb.append("        </if>").append(System.lineSeparator());
 		sb.append("    </select>").append(System.lineSeparator());
-		sb.append("    <!----------------------------------------------------------分隔线------------------------------------------------------------->").append(System.lineSeparator());
+		sb.append("    <!--****************************************************************分隔线****************************************************************-->").append(System.lineSeparator());
 		sb.append("</mapper>").append(System.lineSeparator());
 		return sb.toString();
 	}
