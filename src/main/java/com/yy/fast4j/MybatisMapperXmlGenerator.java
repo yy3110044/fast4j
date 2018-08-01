@@ -60,6 +60,7 @@ private static final Logger logger = LogManager.getLogger(MybatisMapperXmlGenera
 		sb.append("    ").append(poClass.getSimpleName()).append(" findById(").append(getPoIdTypeName()).append(" id);").append(System.lineSeparator());
 		sb.append("    ").append("List<").append(poClass.getSimpleName()).append(">").append(" query(").append(qcClass.getSimpleName()).append(" qc);").append(System.lineSeparator());
 		sb.append("    ").append("int getCount(").append(qcClass.getSimpleName()).append(" qc);").append(System.lineSeparator());
+		sb.append("    ").append("/*****************************************************************分隔线************************************************************************/").append(System.lineSeparator());
 		sb.append("}").append(System.lineSeparator());
 		return sb.toString();
 	}
@@ -184,6 +185,7 @@ private static final Logger logger = LogManager.getLogger(MybatisMapperXmlGenera
 		sb.append("    ").append(poClass.getSimpleName()).append(" findById(").append(getPoIdTypeName()).append(" id);").append(System.lineSeparator());
 		sb.append("    ").append("List<").append(poClass.getSimpleName()).append(">").append(" query(").append(qcClass.getSimpleName()).append(" qc);").append(System.lineSeparator());
 		sb.append("    ").append("int getCount(").append(qcClass.getSimpleName()).append(" qc);").append(System.lineSeparator());
+		sb.append("    ").append("/*****************************************************************分隔线************************************************************************/").append(System.lineSeparator());
 		sb.append("}").append(System.lineSeparator());
 		return sb.toString();
 	}
@@ -247,6 +249,7 @@ private static final Logger logger = LogManager.getLogger(MybatisMapperXmlGenera
 		sb.append("    public int getCount(").append(qcClass.getSimpleName()).append(" qc) {").append(System.lineSeparator());
 		sb.append("        return mapper.getCount(qc);").append(System.lineSeparator());
 		sb.append("    }").append(System.lineSeparator());
+		sb.append("    ").append("/*****************************************************************分隔线************************************************************************/").append(System.lineSeparator());
 		sb.append("}").append(System.lineSeparator());
 		return sb.toString();
 	}
@@ -344,9 +347,12 @@ private static final Logger logger = LogManager.getLogger(MybatisMapperXmlGenera
 		StringBuilder result = new StringBuilder();
 		result.append("update ").append(tableName).append(" set").append(System.lineSeparator()).append("        ");
 		for(int i=0; i<fields.length; i++) {
-			result.append(fields[i].getName()).append(" = ").append("#{").append(fields[i].getName()).append("}");
-			if(i < fields.length - 1) {
-				result.append(", ");
+			String fieldName = fields[i].getName();
+			if(!"id".equals(fieldName)) {
+				result.append(fieldName).append(" = ").append("#{").append(fieldName).append("}");
+				if(i < fields.length - 1) {
+					result.append(", ");
+				}
 			}
 		}
 		result.append(System.lineSeparator()).append("        ").append("where id = #{id}");
