@@ -139,7 +139,7 @@ public class Fast4jUtils {
 	}
 	
 	//根据枚举返回select html字符串
-	public static String getSelectHtmlStr(Class<? extends Enum<?>> cls, String selectId, String style, Enum<?> ... except) {
+	public static String getSelectHtmlStr(Class<? extends Enum<?>> cls, String selectId, String style, String[] extraOption, Enum<?> ... except) {
 		Enum<?>[] ts = null;
 		try {
 			ts = (Enum<?>[])cls.getMethod("values").invoke(null);
@@ -160,6 +160,12 @@ public class Fast4jUtils {
 			sb.append(" style=\"" + style + "\"");
 		}
 		sb.append(">");
+		
+		if(extraOption != null && extraOption.length > 0) {
+			for(String extra : extraOption) {
+				sb.append("<option>").append(extra).append("</option>");
+			}
+		}
 
 		for(Enum<?> e : list) {
 			sb.append("<option>").append(e.name()).append("</option>");
