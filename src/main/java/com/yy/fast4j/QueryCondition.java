@@ -42,6 +42,14 @@ public class QueryCondition {
 	public Page getPage() {
 		return this.page;
 	}
+	public Page getPage(int rowCount) {
+		if(page != null) {
+			page.setRowCount(rowCount);
+			return page;
+		} else {
+			return null;
+		}
+	}
 	
 	//删除查询条件
 	public QueryCondition removeCondition(String field, String operator, ConditionJoin join) {
