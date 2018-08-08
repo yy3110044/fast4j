@@ -8,11 +8,15 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.servlet.ServletContext;
@@ -134,6 +138,36 @@ public class Fast4jUtils {
 		return context.getEnvironment().getProperty(name);
 	}
 	
+	//根据枚举返回select html字符串
+	public static String getSelectHtmlStr(Class<? extends Enum<?>> cls, String selectId, String style, Enum<?> ... except) {
+		Enum<?>[] ts = null;
+		try {
+			ts = (Enum<?>[])cls.getMethod("values").invoke(null);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			logger.error(e.toString());
+			throw new RuntimeException(e);
+		}
+		List<Enum<?>> list = new ArrayList<Enum<?>>(Arrays.asList(ts));
+		if(except != null && except.length > 0) {
+			list.removeAll(Arrays.asList(except));
+		}
+		StringBuilder sb = new StringBuilder();
+		sb.append("<select");
+		if(selectId != null) {
+			sb.append(" id=\"" + selectId + "\"");
+		}
+		if(style != null) {
+			sb.append(" style=\"" + style + "\"");
+		}
+		sb.append(">");
+
+		for(Enum<?> e : list) {
+			sb.append("<option>").append(e.name()).append("</option>");
+		}
+		sb.append("</select>");
+		return sb.toString();
+	}
+
 	//将对象转为map
 	public static JsonResultMap ObjectToMap(Object obj) {
 		Field[] fields = obj.getClass().getFields();
