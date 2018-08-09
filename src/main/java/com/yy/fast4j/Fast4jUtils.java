@@ -173,6 +173,15 @@ public class Fast4jUtils {
 		sb.append("</select>");
 		return sb.toString();
 	}
+	public static String getSelectHtmlStr(Class<? extends Enum<?>> cls) {
+		return getSelectHtmlStr(cls, null, null, null);
+	}
+	public static String getSelectHtmlStr(Class<? extends Enum<?>> cls, String selectId) {
+		return getSelectHtmlStr(cls, selectId, null, null);
+	}
+	public static String getSelectHtmlStr(Class<? extends Enum<?>> cls, String selectId, String style) {
+		return getSelectHtmlStr(cls, selectId, style, null);
+	}
 
 	//将对象转为map
 	public static JsonResultMap ObjectToMap(Object obj) {
