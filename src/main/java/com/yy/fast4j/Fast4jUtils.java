@@ -160,16 +160,7 @@ public class Fast4jUtils {
 			sb.append(" style=\"" + style + "\"");
 		}
 		sb.append(">");
-		
-		if(extraOption != null && extraOption.length > 0) {
-			for(String extra : extraOption) {
-				sb.append("<option>").append(extra).append("</option>");
-			}
-		}
-
-		for(Enum<?> e : list) {
-			sb.append("<option>").append(e.name()).append("</option>");
-		}
+		sb.append(getSelectOptionHtmlStr(cls, extraOption, except));
 		sb.append("</select>");
 		return sb.toString();
 	}
@@ -181,6 +172,37 @@ public class Fast4jUtils {
 	}
 	public static String getSelectHtmlStr(Class<? extends Enum<?>> cls, String selectId, String style) {
 		return getSelectHtmlStr(cls, selectId, style, null);
+	}
+	public static String getSelectOptionHtmlStr(Class<? extends Enum<?>> cls, String[] extraOption, Enum<?> ... except) {
+		Enum<?>[] ts = null;
+		try {
+			ts = (Enum<?>[])cls.getMethod("values").invoke(null);
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			logger.error(e.toString());
+			throw new RuntimeException(e);
+		}
+		List<Enum<?>> list = new ArrayList<Enum<?>>(Arrays.asList(ts));
+		if(except != null && except.length > 0) {
+			list.removeAll(Arrays.asList(except));
+		}
+		StringBuilder sb = new StringBuilder();
+		if(extraOption != null && extraOption.length > 0) {
+			for(String extra : extraOption) {
+				sb.append("<option>").append(extra).append("</option>");
+			}
+		}
+		for(Enum<?> e : list) {
+			sb.append("<option>").append(e.name()).append("</option>");
+		}
+		return sb.toString();
+	}
+	public static String getSelectOptionHtmlStr(Class<? extends Enum<?>> cls, Enum<?> ... except) {
+		return getSelectOptionHtmlStr(cls, null, except);
+	}
+	
+	static enum SS {a, b, c, d, e, f, g}
+	public static void main(String[] args) {
+		System.out.println(Fast4jUtils.getSelectHtmlStr(SS.class));
 	}
 
 	//将对象转为map
