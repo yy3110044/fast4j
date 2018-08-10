@@ -139,7 +139,7 @@ public class Fast4jUtils {
 	}
 	
 	//根据枚举返回select html字符串
-	public static String getSelectHtmlStr(Class<? extends Enum<?>> cls, String selectId, String style, String[] extraOption, Enum<?> ... except) {
+	public static String getSelectHtmlStr(Class<? extends Enum<?>> cls, String selectId, String style, String selected, String[] extraOption, Enum<?> ... except) {
 		Enum<?>[] ts = null;
 		try {
 			ts = (Enum<?>[])cls.getMethod("values").invoke(null);
@@ -160,20 +160,23 @@ public class Fast4jUtils {
 			sb.append(" style=\"" + style + "\"");
 		}
 		sb.append(">");
-		sb.append(getSelectOptionHtmlStr(cls, extraOption, except));
+		sb.append(getSelectOptionHtmlStr(cls, selected, extraOption, except));
 		sb.append("</select>");
 		return sb.toString();
 	}
 	public static String getSelectHtmlStr(Class<? extends Enum<?>> cls) {
-		return getSelectHtmlStr(cls, null, null, null);
+		return getSelectHtmlStr(cls, null, null, null, null);
 	}
 	public static String getSelectHtmlStr(Class<? extends Enum<?>> cls, String selectId) {
-		return getSelectHtmlStr(cls, selectId, null, null);
+		return getSelectHtmlStr(cls, selectId, null, null, null);
 	}
 	public static String getSelectHtmlStr(Class<? extends Enum<?>> cls, String selectId, String style) {
-		return getSelectHtmlStr(cls, selectId, style, null);
+		return getSelectHtmlStr(cls, selectId, style, null, null);
 	}
-	public static String getSelectOptionHtmlStr(Class<? extends Enum<?>> cls, String[] extraOption, Enum<?> ... except) {
+	public static String getSelectHtmlStr(Class<? extends Enum<?>> cls, String selectId, String style, String selected) {
+		return getSelectHtmlStr(cls, selectId, style, selected, null);
+	}
+	public static String getSelectOptionHtmlStr(Class<? extends Enum<?>> cls, String selected, String[] extraOption, Enum<?> ... except) {
 		Enum<?>[] ts = null;
 		try {
 			ts = (Enum<?>[])cls.getMethod("values").invoke(null);
@@ -188,21 +191,20 @@ public class Fast4jUtils {
 		StringBuilder sb = new StringBuilder();
 		if(extraOption != null && extraOption.length > 0) {
 			for(String extra : extraOption) {
-				sb.append("<option>").append(extra).append("</option>");
+				sb.append("<option" + ((selected != null && selected.equals(extra)) ? " selected=\"selected\"" : "") + ">").append(extra).append("</option>");
 			}
 		}
 		for(Enum<?> e : list) {
-			sb.append("<option>").append(e.name()).append("</option>");
+			String name = e.name();
+			sb.append("<option" + ((selected != null && selected.equals(name)) ? " selected=\"selected\"" : "") + ">").append(name).append("</option>");
 		}
 		return sb.toString();
 	}
 	public static String getSelectOptionHtmlStr(Class<? extends Enum<?>> cls, Enum<?> ... except) {
-		return getSelectOptionHtmlStr(cls, null, except);
+		return getSelectOptionHtmlStr(cls, null, null, except);
 	}
-	
-	static enum SS {a, b, c, d, e, f, g}
-	public static void main(String[] args) {
-		System.out.println(Fast4jUtils.getSelectHtmlStr(SS.class));
+	public static String getSelectOptionHtmlStr(Class<? extends Enum<?>> cls, String selected, Enum<?> ... except) {
+		return getSelectOptionHtmlStr(cls, selected, null, except);
 	}
 
 	//将对象转为map
