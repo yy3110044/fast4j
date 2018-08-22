@@ -3,7 +3,9 @@ package com.yy.fast4j;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpSession;
+import org.springframework.data.redis.core.RedisTemplate;
 
 /**
  * 登陆管理器
@@ -16,21 +18,21 @@ public class LoginManager {
 	private String userIdToTokenPre;
 	private String tokenToUserIdPre;
 	private long tokenExpirationTime;//token过期时间，单位：毫秒
-	private Cache cache;
+	private RedisTemplate<String, Object> redisTemplate;
 
-	public LoginManager(String userIdToTokenPre, String tokenToUserIdPre, long tokenExpirationTime, Cache cache) {
+	public LoginManager(String userIdToTokenPre, String tokenToUserIdPre, long tokenExpirationTime, RedisTemplate<String, Object> redisTemplate) {
 		this.userIdToTokenPre = userIdToTokenPre;
 		this.tokenToUserIdPre = tokenToUserIdPre;
 		this.tokenExpirationTime = tokenExpirationTime;
-		this.cache = cache;
+		this.redisTemplate = redisTemplate;
 	}
 	
 	//app登陆
 	public String appLogin(Integer userId) {
 		//先检查此用户有没有app登陆过，如果有，则删除以前的token
-		String token = cache.delete(userIdToTokenPre, userId.toString());
+		String token = (String)RedisUtil.deleteAndReturnValue(redisTemplate, userIdToTokenPre, userId.toString());
 		if(token != null) { //删除以前的token缓存
-			cache.delete(tokenToUserIdPre, token);
+			RedisUtil.delete(redisTemplate, tokenToUserIdPre, token);
 		}
 		
 		//再检查有没有web登陆过，如果有，清除session中的userId
@@ -43,17 +45,17 @@ public class LoginManager {
 		token = UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
 		
 		//将新的当前用户token覆盖原来的token
-		cache.set(userIdToTokenPre, userId.toString(), token, tokenExpirationTime);
-		cache.set(tokenToUserIdPre, token, userId.toString(), tokenExpirationTime);
+		RedisUtil.set(redisTemplate, userIdToTokenPre, userId.toString(), token, tokenExpirationTime, TimeUnit.MILLISECONDS);
+		RedisUtil.set(redisTemplate, tokenToUserIdPre, token, userId, tokenExpirationTime, TimeUnit.MILLISECONDS);
 		return token;
 	}
 	
 	//web登陆
 	public void webLogin(Integer userId, HttpSession session) {
 		//先检查此用户有没有app登陆过，如果有，则删除以前的token
-		String token = cache.delete(userIdToTokenPre, userId.toString());
+		String token = (String)RedisUtil.deleteAndReturnValue(redisTemplate, userIdToTokenPre, userId.toString());
 		if(token != null) { //删除以前的token缓存
-			cache.delete(tokenToUserIdPre, token);
+			RedisUtil.delete(redisTemplate, tokenToUserIdPre, token);
 		}
 		
 		//先检查此用户有没有web登陆过，如果有，清除session中的userId
@@ -69,9 +71,9 @@ public class LoginManager {
 	//app退出登陆
 	public void appLogout(String token) {
 		if(token != null) {
-			String userId = cache.delete(tokenToUserIdPre, token);
+			Integer userId = (Integer)RedisUtil.deleteAndReturnValue(redisTemplate, tokenToUserIdPre, token);
 			if(userId != null) {
-				cache.delete(userIdToTokenPre, userId);
+				RedisUtil.delete(redisTemplate, userIdToTokenPre, userId.toString());
 			}
 		}
 	}

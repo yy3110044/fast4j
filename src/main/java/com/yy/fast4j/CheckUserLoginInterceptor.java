@@ -2,14 +2,15 @@ package com.yy.fast4j;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 public class CheckUserLoginInterceptor implements HandlerInterceptor {
-	private Cache cache;
+	private RedisTemplate<String, Object> redisTemplate;
 	private String tokenToUserIdPre;
-	public CheckUserLoginInterceptor(Cache cache, String tokenToUserIdPre) {
-		this.cache = cache;
+	public CheckUserLoginInterceptor(RedisTemplate<String, Object> redisTemplate, String tokenToUserIdPre) {
+		this.redisTemplate = redisTemplate;
 		this.tokenToUserIdPre = tokenToUserIdPre;
 	}
 	
@@ -25,17 +26,19 @@ public class CheckUserLoginInterceptor implements HandlerInterceptor {
 		//session中没有再从redis中读取userId
 		String token = request.getParameter("token");
 		if(token != null) {
-			userId = cache.getInt(tokenToUserIdPre, token);
+			userId = RedisUtil.getInteger(redisTemplate, tokenToUserIdPre, token);
 			if(userId != null) {
 				request.setAttribute("userId", userId);
 				return true;
 			} else {
-				response.setContentType("application/json;charset=utf-8");
+				response.setHeader("Access-Control-Allow-Origin", "*");
+				response.setContentType("application/json;charset=UTF-8");
 				response.getWriter().write(Fast4jUtils.ObjecttoJson(new ResponseObject(200, "您还未登陆，或登陆已过期，请重新登陆")));
 				return false;
 			}
 		} else {
-			response.setContentType("application/json;charset=utf-8");
+			response.setHeader("Access-Control-Allow-Origin", "*");
+			response.setContentType("application/json;charset=UTF-8");
 			response.getWriter().write(Fast4jUtils.ObjecttoJson(new ResponseObject(200, "您还未登陆，或登陆已过期，请重新登陆")));
 			return false;
 		}
