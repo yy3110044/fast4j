@@ -83,7 +83,7 @@ public class Fast4jUtils {
 	}
 	
 	//得到每一天的开始时间和结束时间
-	private static final long _24HoursMillis = 86400000L; //24小时的毫秒数
+	public static final long _24HoursMillis = 86400000L; //24小时的毫秒数
 	private static final long _8HoursMillis = 28800000L; //8小时的毫秒数
 	private static final long _jiange = 57600000L;
 	public static long getEveryDayStartTime() {
