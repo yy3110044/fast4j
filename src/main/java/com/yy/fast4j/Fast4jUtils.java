@@ -86,6 +86,9 @@ public class Fast4jUtils {
 	private static final long _24HoursMillis = 86400000L; //24小时的毫秒数
 	private static final long _8HoursMillis = 28800000L; //8小时的毫秒数
 	private static final long _jiange = 57600000L;
+	public static long getEveryDayStartTime() {
+		return getEveryDayStartTime(System.currentTimeMillis());
+	}
 	public static long getEveryDayStartTime(long millis) {
 		if(millis % _24HoursMillis >= _jiange) {
 			return millis / _24HoursMillis * _24HoursMillis - _8HoursMillis + _24HoursMillis;
