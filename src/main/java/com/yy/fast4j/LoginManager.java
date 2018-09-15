@@ -4,8 +4,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.data.redis.core.RedisTemplate;
 
@@ -99,7 +97,7 @@ public class LoginManager {
 			return false;
 		}
 	}
-	public boolean lsLogin(HttpSession session) {
+	public boolean isLogin(HttpSession session) {
 		Object userId = session.getAttribute("userId");
 		return userId != null;
 	}
