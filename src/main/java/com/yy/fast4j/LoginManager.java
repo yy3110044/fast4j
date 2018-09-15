@@ -4,6 +4,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.data.redis.core.RedisTemplate;
 
@@ -86,5 +88,19 @@ public class LoginManager {
 			session = webLoginUserMap.remove(userId);
 			if(session != null) session.removeAttribute("userId");
 		}
+	}
+	
+	//判断是否登陆
+	public boolean isLogin(String token) {
+		if(token != null) {
+			Integer userId = RedisUtil.getInteger(redisTemplate, tokenToUserIdPre, token);
+			return userId != null;
+		} else {
+			return false;
+		}
+	}
+	public boolean lsLogin(HttpSession session) {
+		Object userId = session.getAttribute("userId");
+		return userId != null;
 	}
 }
