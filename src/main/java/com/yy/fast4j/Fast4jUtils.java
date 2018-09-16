@@ -108,7 +108,7 @@ public class Fast4jUtils {
 	
 	//将对象转换成json字符串
 	private static ObjectMapper objectMapper = new ObjectMapper().setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
-	public static String ObjecttoJson(Object o) {
+	public static String objectToJson(Object o) {
 		try {
 			return objectMapper.writeValueAsString(o);
 		} catch (JsonProcessingException e) {
@@ -211,8 +211,8 @@ public class Fast4jUtils {
 	}
 
 	//将对象转为map
-	public static JsonResultMap ObjectToMap(Object obj) {
-		Field[] fields = obj.getClass().getFields();
+	public static JsonResultMap objectToMap(Object obj) {
+		Field[] fields = obj.getClass().getDeclaredFields();
 		JsonResultMap map = new JsonResultMap();
 		try {
 			for(Field field : fields) {
