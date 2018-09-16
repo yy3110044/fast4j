@@ -33,13 +33,13 @@ public class CheckUserLoginInterceptor implements HandlerInterceptor {
 			} else {
 				response.setHeader("Access-Control-Allow-Origin", "*");
 				response.setContentType("application/json;charset=UTF-8");
-				response.getWriter().write(Fast4jUtils.ObjecttoJson(new ResponseObject(200, "您还未登陆，或登陆已过期，请重新登陆")));
+				response.getWriter().write(Fast4jUtils.objectToJson(new ResponseObject(200, "您还未登陆，或登陆已过期，请重新登陆")));
 				return false;
 			}
 		} else {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			response.setContentType("application/json;charset=UTF-8");
-			response.getWriter().write(Fast4jUtils.ObjecttoJson(new ResponseObject(200, "您还未登陆，或登陆已过期，请重新登陆")));
+			response.getWriter().write(Fast4jUtils.objectToJson(new ResponseObject(200, "您还未登陆，或登陆已过期，请重新登陆")));
 			return false;
 		}
 	}
