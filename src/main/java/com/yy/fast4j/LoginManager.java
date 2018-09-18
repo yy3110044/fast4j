@@ -13,7 +13,7 @@ import org.springframework.data.redis.core.RedisTemplate;
  *
  */
 public class LoginManager {
-	private final Map<Integer, HttpSession> webLoginUserMap = new ConcurrentHashMap<Integer, HttpSession>();
+	private final Map<Integer, HttpSession> webLoginUserMap;
 	
 	private String userIdToTokenPre;
 	private String tokenToUserIdPre;
@@ -25,6 +25,7 @@ public class LoginManager {
 		this.tokenToUserIdPre = tokenToUserIdPre;
 		this.tokenExpirationTime = tokenExpirationTime;
 		this.redisTemplate = redisTemplate;
+		this.webLoginUserMap = new ConcurrentHashMap<Integer, HttpSession>();
 	}
 	
 	//app登陆
