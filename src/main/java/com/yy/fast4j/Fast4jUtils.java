@@ -45,9 +45,10 @@ public class Fast4jUtils {
 	
 	public static String getBasePath(HttpServletRequest request) {
 		StringBuilder sb = new StringBuilder();
-		sb.append(request.getScheme()).append("://").append(request.getServerName());
+		String scheme = request.getScheme();
+		sb.append(scheme).append("://").append(request.getServerName());
 		int port = request.getServerPort();
-		if(port != 80) {
+		if(("https".equals(scheme) && port != 443) || ("http".equals(scheme) && port != 80)) {
 			sb.append(':').append(port);
 		}
 		sb.append(request.getContextPath()).append('/');
