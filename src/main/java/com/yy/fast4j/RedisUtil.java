@@ -52,6 +52,9 @@ public class RedisUtil {
 	public static Double getDouble(RedisTemplate<String, Object> redisTemplate, String pre, String key) {
 		return (Double)getObject(redisTemplate, pre, key);
 	}
+	public static Boolean getBoolean(RedisTemplate<String, Object> redisTemplate, String pre, String key) {
+		return (Boolean)getObject(redisTemplate, pre, key);
+	}
 	
 	//删除key以及值
 	public static Boolean delete(RedisTemplate<String, Object> redisTemplate, String pre, String key) {
