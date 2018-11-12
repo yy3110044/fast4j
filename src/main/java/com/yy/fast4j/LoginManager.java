@@ -4,6 +4,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.springframework.data.redis.core.RedisTemplate;
 
@@ -101,5 +103,22 @@ public class LoginManager {
 	public boolean isLogin(HttpSession session) {
 		Object userId = session.getAttribute("userId");
 		return userId != null;
+	}
+	
+	
+	//从session中，以及redis中获取登陆用户的userId, 如果用户没有登陆则返回null
+	public Integer getUserId(HttpServletRequest req) {
+		Integer userId = (Integer)req.getSession().getAttribute("userId");
+		if(userId != null) {
+			return userId;
+		}
+
+		//session中没有再从redis中读取userId
+		String token = req.getParameter("token");
+		if(token != null) {
+			return RedisUtil.getInteger(redisTemplate, tokenToUserIdPre, token);
+		} else {
+			return null;
+		}
 	}
 }
